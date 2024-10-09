@@ -1,5 +1,15 @@
 const ingredientesModel = require("../models/ingredienteModel");
 const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://<usuario>:<contraseña>@cluster0.mongodb.net/nombre_de_tu_base', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('Conectado a MongoDB Atlas'))
+.catch((err) => console.error('Error al conectar a MongoDB Atlas', err));
+
+
+
 const getTodos = async (req, res) => {    
     try {
         const ingredientes = await ingredientesModel.getTodos();
