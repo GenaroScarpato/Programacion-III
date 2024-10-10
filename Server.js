@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ingredientesRoutes = require('./routes/ingredientes');
+const usuariosRoutes = require('./routes/usuarios'); 
+
 
 class Server {
 
@@ -24,6 +26,7 @@ class Server {
 
     cargarRutas() {
         this.app.use("/api/ingredientes", require('./routes/ingredientes'));
+        this.app.use("/api/usuarios", require('./routes/usuarios'));
     }
 
     conectarABD() {
