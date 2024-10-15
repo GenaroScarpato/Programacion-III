@@ -1,5 +1,4 @@
 const ingredientesModel = require("../models/ingredienteModel");
-const mongoose = require('mongoose');
 
 
 const getTodos = async (req, res) => {    
@@ -13,7 +12,6 @@ const getTodos = async (req, res) => {
 
 const getById = async (req, res) => {
     const { id } = req.params;
-    
    
     try {
         const ingrediente = await ingredientesModel.getById(id);

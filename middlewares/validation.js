@@ -1,72 +1,58 @@
 const { response, request } = require('express');
 const jwt = require('jsonwebtoken');
+const { Usuario } = require('../models/usuarioModel');
 
-const validarJwt = async (req = request, res = response, next)=>{
+const validarJwt = async (req, res, next) => {
+    const token = req.header('x-token');
 
-        // ESTO NO VA...
-        const userEsperado = {
-            _id: "idDeMentiritas",
-            nombre: "juan",
-            pass: "1234"
-        }
+    if (!token) {
+        return res.status(401).json({
+            msg: 'No hay token en la petición'
+        });
+    }
 
-        const token = req.header('x-token');
-
-        if(!token){
+    try {
+        // Verificar el token
+        const {id} = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+        if (!id) {
             return res.status(401).json({
-                msg: 'No hay token en la petición'
+                msg: 'Token no válido - No se encontró un _id en el token'
+            });
+        }        
+        const usuario = await Usuario.findById({ _id: id });
+        if (!usuario) {
+            return res.status(401).json({
+                msg: 'Token no válido - usuario no existe en la DB'
             });
         }
-        try {
-        
-            const data = jwt.verify( token, process.env.SECRETORPRIVATEKEY );
-            const {nombre} = data;
-    
-            // const usuario = await Usuario.findById( uid );
-    
-            if( userEsperado.nombre !== nombre ) {
-                return res.status(401).json({
-                    msg: 'Token no válido - usuario no existe DB'
-                })
-            }
-            
-            req.nombreDeUsuario = nombre;
-            next();
-    
-        } catch (error) {
-            console.log(error);
-            res.status(401).json({
-                msg: 'Token no válido'
-            })
-        }  
-}
 
-const validarRol = (req, resp, next) => {
-    // ESTO NO VA...
-    const userEsperado = {
-        _id: "idDeMentiritas",
-        nombre: "juan",
-        rol: "pichi",
-        pass: "1234"
+        // Pasar el usuario verificado al request para utilizarlo en otras rutas
+        req.usuario = usuario;
+
+        next();
+
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({
+            msg: 'Token no válido'
+        });
     }
-    // buscar usuario "juan"
+};
 
-    if (req.nombreDeUsuario === userEsperado.nombre) {
-        if (userEsperado.rol === "ADMIN") {
+
+const validarRol = async(req, resp, next) => {
+
+    const usuario = req.usuario;
+    console.log(usuario)
+     
+        if (usuario.rol === "ADMIN") {
+            console.log("adelante admin");
             next();
         } else {
             resp.status(401).json({
                 msg: "afueraaaa, sos pichi, no sos admin"
             })
         }
-    } else {
-        resp.status(401).json({
-            msg: "afueraaaa"
-        })
-    }
-
-    console.log(req.nombreDeUsuario)
-    next();
 }
 
 module.exports = {

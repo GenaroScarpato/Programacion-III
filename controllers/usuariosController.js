@@ -1,9 +1,9 @@
-const Usuario = require('../models/usuarioModel');
+const usuarioModel = require('../models/usuarioModel');
 
 // Obtener todos los usuarios
 const getUsuarios = async (req, res) => {
     try {
-        const usuarios = await Usuario.find(); // Obtener todos los usuarios
+        const usuarios = await usuarioModel.find(); // Obtener todos los usuarios
         res.json(usuarios);
     } catch (error) {
         res.status(500).json({ error: 'Hubo un error al obtener los usuarios' });
@@ -14,28 +14,34 @@ const getUsuarios = async (req, res) => {
 const getUsuarioById = async (req, res) => {
     const { id } = req.params;
     try {
-        const usuario = await Usuario.findById(id);
+        const usuario = await usuarioModel.getById(id);
         if (usuario) {
             res.json(usuario);
         } else {
-            res.status(404).json({ error: 'Usuario no encontrado' });
+            res.status(404).json({ error: 'usuario no encontrado' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Hubo un error al obtener el usuario' });
     }
 }
 
-// Crear un nuevo usuario
+
+
 const addUsuario = async (req, res) => {
     try {
-        const nuevoUsuario = new Usuario(req.body);
-        await nuevoUsuario.save();
-        res.status(201).json({ message: 'Usuario creado exitosamente', nuevoUsuario });
+        const nuevoUsuario = req.body; 
+        const usuariosActualizados = await usuarioModel.add(nuevoUsuario);
+        res.status(201).json({
+            message: 'usuarioModel agregado exitosamente',
+            usuarios: usuariosActualizados // Retorna el array actualizado
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Hubo un error al crear el usuario' });
+        res.status(500).json({
+            message: 'Hubo un error al agregar al usuario',
+            error: error.message
+        });
     }
 }
-
 module.exports = {
     getUsuarios,
     getUsuarioById,

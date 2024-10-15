@@ -27,6 +27,7 @@ class Server {
     cargarRutas() {
         this.app.use("/api/ingredientes", require('./routes/ingredientes'));
         this.app.use("/api/usuarios", require('./routes/usuarios'));
+        this.app.use("/api", require('./routes/auth'));
     }
 
     conectarABD() {
@@ -35,7 +36,7 @@ class Server {
          console.log('Connecting to the database...', process.env.PORT)
        })
        .catch((err) => {
-        console.log(`el mensaje de error es ${err}`);
+        console.log(`error connecting to the database ${err}`);
        });
     }
 }

@@ -1,69 +1,59 @@
 const jwt = require('jsonwebtoken');
-
+const { Usuario,getByName} = require('../models/usuarioModel'); // Importar correctamente
 
 const login = async (req, res) => {
-
-    // ESTO NO VA...
-    const userEsperado = {
-        _id: "idDeMentiritas",
-        nombre: "juan",
-        pass: "1234"
-    }
-
-    const {_id, nombre, pass} = userEsperado;
-    
     try {
-        const {user, clave} = req.body;
-        // Validar user existente
-        if (user !== nombre) {
+        const { nombre, pass } = req.body;
+        
+        // Buscar el usuario en la base de datos
+        const usuario  = await getByName(nombre);
+
+        // Validar si el usuario existe
+        if (!usuario) {
             return res.status(401).json({
-                msg: "Credenciales invalidas"
+                msg: "Credenciales inválidas !usuario"
             });
         }
-        // Validar clave
-        if (clave !== pass) {
+
+        // Validar si la clave es correcta
+        if (pass !== usuario.pass) {
             return res.status(401).json({
-                msg: "Credenciales invalidas"
+                msg: "Credenciales inválidas !clave"
             });
         }
-        // Generar el JWT
-        const token = await generarJWT( userEsperado );
+
+        // Generar el JWT con el id del usuario
+        const token = await generarJWT(usuario._id);
 
         res.json({
-            userEsperado,
+            usuario: usuario.nombre,  // Aquí devuelves el nombre del usuario
             token
-        })
+        });
 
-    } catch(error) {
-        console.log(error)
+    } catch (error) {
+        console.log(error);
         res.status(500).json({
             status: 'error',
-            msg: error
-        });    
+            msg: 'Error interno del servidor'
+        });
     }
-} 
+}
 
-const generarJWT = ( user ) => {
+const generarJWT = (userId) => {
+    return new Promise((resolve, reject) => {
+        const payload = { id: userId };  // Usar solo el ID del usuario
 
-    return new Promise( (resolve, reject) => {
-
-        const payload = {
-            id: user?.id,
-            nombre: user?.nombre
-        };
-
-        jwt.sign( payload, process.env.SECRETORPRIVATEKEY, {
-            expiresIn: 30 // 30 segundos para probar que se venza
-        }, ( err, token ) => {
-            if ( err ) {
+        jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
+            expiresIn: '1h'  // Token expira en 1 hora
+        }, (err, token) => {
+            if (err) {
                 console.log(err);
-                reject( 'No se pudo generar el token' )
+                reject('No se pudo generar el token');
             } else {
-                resolve( token );
+                resolve(token);
             }
-        })
-
-    })
+        });
+    });
 }
 
 module.exports = {
