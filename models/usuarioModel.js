@@ -10,6 +10,9 @@ const usuarioSchema = new mongoose.Schema({
 // Crear el modelo 'Usuario' para la colección 'usuarios'
 const Usuario = mongoose.model('Usuario', usuarioSchema);
 
+const getUsuarios = async () => {
+    return await Usuario.find();
+}
 const getByName = async (username) => {
     return await Usuario.findOne({ nombre: username });  // Cambiar el argumento a un objeto
 }
@@ -22,9 +25,18 @@ const add = async (newUser) => {
     return await user.save(); 
 };
 
+const deleteById = async (id) => {
+    return await Usuario.findByIdAndDelete(id);
+}
+const updateById = async (id, ingredienteActualizado) => {
+    return await Usuario.findByIdAndUpdate(id, ingredienteActualizado, { new: true });
+}
 module.exports = {
     Usuario,
+    getUsuarios,
     getByName,
     add,
-    getById
+    getById,
+    deleteById,
+    updateById
 };
