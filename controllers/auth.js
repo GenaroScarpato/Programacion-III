@@ -3,10 +3,10 @@ const { Usuario,getByName} = require('../models/usuarioModel'); // Importar corr
 
 const login = async (req, res) => {
     try {
-        const { nombre, pass } = req.body;
+        const { username, password } = req.body;
         
         // Buscar el usuario en la base de datos
-        const usuario  = await getByName(nombre);
+        const usuario  = await getByName(username);
 
         // Validar si el usuario existe
         if (!usuario) {
@@ -16,7 +16,7 @@ const login = async (req, res) => {
         }
 
         // Validar si la clave es correcta
-        if (pass !== usuario.pass) {
+        if (password !== usuario.password) {
             return res.status(401).json({
                 msg: "Credenciales inválidas !clave"
             });
@@ -26,7 +26,7 @@ const login = async (req, res) => {
         const token = await generarJWT(usuario._id);
 
         res.json({
-            usuario: usuario.nombre,  // Aquí devuelves el nombre del usuario
+            usuario: usuario.username,  // Aquí devuelves el nombre del usuario
             token
         });
 

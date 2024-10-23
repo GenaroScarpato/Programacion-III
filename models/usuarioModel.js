@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 // Definir el esquema de usuario
 const usuarioSchema = new mongoose.Schema({
-    nombre: { type: String, required: true },
-    pass: { type: String, required: true },
-    rol: { type: String, required: true }
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    role: { type: String, required: true }
 }, {versionKey  : false});
 
 // Crear el modelo 'Usuario' para la colección 'usuarios'
@@ -14,7 +14,7 @@ const getUsuarios = async () => {
     return await Usuario.find();
 }
 const getByName = async (username) => {
-    return await Usuario.findOne({ nombre: username });  // Cambiar el argumento a un objeto
+    return await Usuario.findOne({ username });  // Cambiar el argumento a un objeto
 }
 const getById = async (id) => {
     return await Usuario.findById(id);

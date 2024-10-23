@@ -45,7 +45,7 @@ const validarRol = async(req, resp, next) => {
     const usuario = req.usuario;
     console.log(usuario)
      
-        if (usuario.rol === "ADMIN") {
+        if (usuario.role === "ADMIN") {
             console.log("adelante admin");
             next();
         } else {
@@ -54,6 +54,7 @@ const validarRol = async(req, resp, next) => {
             })
         }
 }
+
 
 module.exports = {
     validarJwt,
