@@ -42,15 +42,15 @@ const validarJwt = async (req, res, next) => {
 
 const validarRol = async(req, resp, next) => {
 
-    const usuario = req.usuario;
-    console.log(usuario)
-     
+    const usuario = req.usuario;     
+
+        console.log(usuario);
+
         if (usuario.role === "ADMIN") {
-            console.log("adelante admin");
             next();
         } else {
             resp.status(401).json({
-                msg: "afueraaaa, sos pichi, no sos admin"
+                msg: "No tenes permisos de Administrador"
             })
         }
 }

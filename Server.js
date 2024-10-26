@@ -28,6 +28,7 @@ class Server {
         this.app.use("/api/ingredientes", require('./routes/ingredientes'));
         this.app.use("/api/usuarios", require('./routes/usuarios'));
         this.app.use("/api", require('./routes/auth'));
+        this.app.use("/api/recetas", require('./routes/recetas'));
     }
 
     conectarABD() {
