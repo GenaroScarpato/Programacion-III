@@ -29,11 +29,23 @@ const getUsuarioById = async (req, res) => {
 
 const addUsuario = async (req, res) => {
     try {
-        const nuevoUsuario = req.body; 
-        const usuariosActualizados = await usuarioModel.add(nuevoUsuario);
+        const { username, password, role } = req.body;
+
+        // Verificar si el usuario ya existe
+        const existeUsuario = await usuarioModel.getByName(username);
+        if (existeUsuario) {
+            return res.status(400).json({
+                message: 'El nombre de usuario ya está en uso'
+            });
+        }
+
+        // Si el usuario no existe, proceder a agregarlo
+        const nuevoUsuario = { username, password, role };
+        const usuarioAgregado = await usuarioModel.add(nuevoUsuario);
+        
         res.status(201).json({
-            message: 'usuarioModel agregado exitosamente',
-            usuarios: usuariosActualizados // Retorna el array actualizado
+            message: 'Usuario agregado exitosamente',
+            usuario: usuarioAgregado
         });
     } catch (error) {
         res.status(500).json({
