@@ -25,7 +25,6 @@ const getById = async (id) => {
         .populate('recetaId', 'titulo');
 };
 
-
 const getByReceta = async (recetaId) => {
     return await Comentario.find({ recetaId }).populate('usuarioId', 'username'); // Poblamos el username del usuario
 };
