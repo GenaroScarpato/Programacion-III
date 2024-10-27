@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const ingredientesRoutes = require('./routes/ingredientes');
 const usuariosRoutes = require('./routes/usuarios'); 
-const recetasRoutes = require('./routes/recetas')
+const recetasRoutes = require('./routes/recetas');
+const comentariosRoutes = require('./routes/comentarios');
 
 
 class Server {
@@ -30,6 +31,7 @@ class Server {
         this.app.use("/api/usuarios", require('./routes/usuarios'));
         this.app.use("/api", require('./routes/auth'));
         this.app.use("/api/recetas", require('./routes/recetas'));
+        this.app.use("/api/comentarios", require('./routes/comentarios'));
     }
 
     conectarABD() {

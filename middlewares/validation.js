@@ -53,7 +53,6 @@ const validarRol = async(req, resp, next) => {
         }
 }
 
-
 module.exports = {
     validarJwt,
     validarRol
