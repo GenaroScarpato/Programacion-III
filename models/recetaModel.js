@@ -10,14 +10,10 @@ const recetaSchema = new mongoose.Schema({
     },
     tipoCocina: { 
         type: String, 
-        enum: ['Cocina Argentina','Cocina Italiana', 'Cocina Americana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
+        enum: ['Cocina Italiana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
         required: true 
     },
-    dieta: { 
-        type: String, 
-        enum: ['Vegetariana', 'Vegana', 'Sin gluten', 'Baja en carbohidratos', 'Keto', 'Paleo', 'Sin lactosa'], 
-        required: false 
-    },
+    ingredientes: [{ type: String, required: true }], 
     metodoCoccion: { 
         type: String, 
         enum: ['Al horno', 'A la parrilla', 'A la plancha', 'Frito', 'Hervido', 'Al vapor', 'Crudo'], 
@@ -27,11 +23,6 @@ const recetaSchema = new mongoose.Schema({
         type: String, 
         enum: ['Menos de 15 minutos', 'Entre 15 y 30 minutos', 'Entre 30 minutos y 1 hora', 'Más de 1 hora'], 
         required: true 
-    },
-    ocasionEspecial: { 
-        type: String, 
-        enum: ['Cumpleaños', 'Navidad', 'Año Nuevo', 'Pascuas', 'Día de San Valentín', 'Fiesta de compromiso'], 
-        required: false 
     },
     nivelDificultad: { 
         type: String, 
@@ -48,8 +39,11 @@ const recetaSchema = new mongoose.Schema({
         enum: ['Verano', 'Invierno', 'Primavera', 'Otoño'], 
         required: false 
     },
-    foto: { type: String, required: true }, // Para almacenar la URL de la foto de la receta
+    foto: { type: String, required: true }
 }, { versionKey: false });
+
+module.exports = mongoose.model('Receta', recetaSchema);
+
 
 const Receta = mongoose.model('Receta', recetaSchema);
 

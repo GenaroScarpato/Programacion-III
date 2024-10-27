@@ -67,34 +67,30 @@ const add = async (req, res) => {
     }
 }
 
-// Método para agregar múltiples recetas en una sola petición
-/*
-const addMultiple = async (req, res) => {
+const buscarRecetasPorIngredientes = async (req, res) => {
+    const { ingredientes } = req.body; // Recibimos los IDs de los ingredientes en el cuerpo de la solicitud
+    
     try {
-        const nuevasRecetas = req.body; // Obtiene el array de recetas del cuerpo de la petición
-        const recetasAgregadas = await Promise.all(
-            nuevasRecetas.map(async (nuevaReceta) => {
-                return await recetasModel.add(nuevaReceta);
-            })
-        );
-        
-        res.status(201).json({
-            message: 'Recetas agregadas exitosamente',
-            recetas: recetasAgregadas // Retorna el array actualizado
-        });
+        const recetas = await recetasModel.find({
+            ingredientes: { $all: ingredientes } // Usamos $all para buscar recetas que contengan todos los ingredientes especificados
+        }).populate('ingredientes'); // Populamos los ingredientes para ver los detalles
+
+        if (recetas.length > 0) {
+            res.json(recetas);
+        } else {
+            res.status(404).json({ message: 'No se encontraron recetas con los ingredientes especificados' });
+        }
     } catch (error) {
-        res.status(500).json({
-            message: 'Hubo un error al agregar las recetas',
-            error: error.message
-        });
+        res.status(500).json({ error: 'Hubo un error al buscar las recetas' });
     }
-}
-*/
+};
+
 
 module.exports = {
     getTodos,
     getById,
     deleteById,
     updateById,
-    add
+    add,
+    buscarRecetasPorIngredientes
 }
