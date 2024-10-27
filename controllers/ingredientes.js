@@ -70,7 +70,7 @@ const add = async (req, res) => {
 }
 
 // METODO ADD PARA AGREGAR MULTIPLES INGREDIENTES EN UNA SOLA PETICIÓN
-/*const add = async (req, res) => {
+const addMany = async (req, res) => {
     try {
         const nuevosIngredientes = req.body; // Obtiene el array de ingredientes del cuerpo de la petición
         const ingredientesActualizados = await Promise.all(
@@ -90,12 +90,13 @@ const add = async (req, res) => {
         });
     }
 }
-*/
+
 
 module.exports = {
     getTodos,
     getById,
     deleteById,
     updateById,
-    add
+    add,
+    addMany
 }

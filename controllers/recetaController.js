@@ -1,10 +1,11 @@
 const recetasModel = require("../models/recetaModel");
 
-const getTodos = async (req, res) => {    
+const getAll = async (req, res) => {    
     try {
-        const recetas = await recetasModel.getTodos();
+        const recetas = await recetasModel.getAll();
         res.json(recetas);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Hubo un error al obtener las recetas' });
     }
 }
@@ -87,7 +88,7 @@ const buscarRecetasPorIngredientes = async (req, res) => {
 
 
 module.exports = {
-    getTodos,
+    getAll,
     getById,
     deleteById,
     updateById,

@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const ingredienteSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
-    foto: { type: String, required: true },
-    color: { type: String, required: true }
+    foto: { type: String, required: true }
 }, {versionKey  : false});
 
 const Ingrediente = mongoose.model('Ingrediente', ingredienteSchema);
@@ -31,6 +30,7 @@ const add = async (nuevoIngrediente) => {
 
 
 module.exports = {
+    Ingrediente,
     getTodos,
     getById,
     deleteById,

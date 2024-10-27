@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const ingredientesRoutes = require('./routes/ingredientes');
 const usuariosRoutes = require('./routes/usuarios'); 
+const recetasRoutes = require('./routes/recetas')
 
 
 class Server {

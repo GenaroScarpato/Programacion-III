@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const {getTodos, getById, deleteById, updateById, add, buscarRecetasPorIngredientes} = require("../controllers/recetaController");
+const {getAll, getById, deleteById, updateById, add, buscarRecetasPorIngredientes} = require("../controllers/recetaController");
 const { validarJwt, validarRol } = require('../middlewares/validation');
 
-router.get('/', getTodos);
-router.get('/all', getTodos);
+router.get('/', getAll);
+router.get('/all', getAll);
 router.get('/:id',[validarJwt], getById);
 router.delete('/:id',[validarJwt,validarRol], deleteById);
 router.put('/:id',[validarJwt,validarRol], updateById);
