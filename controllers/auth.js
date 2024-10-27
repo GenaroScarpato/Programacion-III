@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { Usuario,getByName} = require('../models/usuarioModel'); // Importar correctamente
 
 const login = async (req, res) => {
@@ -14,14 +15,13 @@ const login = async (req, res) => {
                 msg: "Credenciales inválidas !usuario"
             });
         }
-
-        // Validar si la clave es correcta
-        if (password !== usuario.password) {
+        // Validar la contraseña
+        const validPassword = await bcrypt.compare(password, usuario.password);
+        if (!validPassword) {
             return res.status(401).json({
-                msg: "Credenciales inválidas !clave"
+                msg: "Credenciales inválidas !password"
             });
         }
-
         // Generar el JWT con el id del usuario
         const token = await generarJWT(usuario._id);
 

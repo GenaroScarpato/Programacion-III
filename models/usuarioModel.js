@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const hashPassword = require('../middlewares/hashPassword'); 
+
 
 // Definir el esquema de usuario
 
@@ -12,6 +14,7 @@ const usuarioSchema = new mongoose.Schema({
     },
 }, { versionKey: false });
 
+usuarioSchema.pre('save', hashPassword);
 
 
 // Crear el modelo 'Usuario' para la colección 'usuarios'

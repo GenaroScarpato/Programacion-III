@@ -45,19 +45,20 @@ const recetaSchema = new mongoose.Schema({
 const Receta = mongoose.model('Receta', recetaSchema);
 
 const verificarIngredientesExistentes = async (ingredientesIds) => {
-    console.log("aca si")
         const ingredientes = await Ingrediente.find({ _id: { $in: ingredientesIds } });
-        console.log("aca no")
     return ingredientes.length === ingredientesIds.length; // Retorna true si todos existen
 };
 
 // CRUD
 const getAll = async () => {
-    return await Receta.find();
+    return await Receta.find().populate('ingredientes', 'nombre -_id');
 }
+
 const getById = async (id) => {
-    return await Receta.findById(id);
+    return await Receta.findById(id).populate('ingredientes', 'nombre -_id');
 }
+
+
 const deleteById = async (id) => {
     return await Receta.findByIdAndDelete(id);
 }
