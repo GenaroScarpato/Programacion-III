@@ -44,8 +44,6 @@ const validarRol = async(req, resp, next) => {
 
     const usuario = req.usuario;     
 
-        console.log(usuario);
-
         if (usuario.role === "ADMIN") {
             next();
         } else {

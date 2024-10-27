@@ -10,7 +10,7 @@ const recetaSchema = new mongoose.Schema({
     },
     tipoCocina: { 
         type: String, 
-        enum: ['Cocina Italiana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
+        enum: ['Cocina Argentina','Cocina Italiana', 'Cocina Americana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
         required: true 
     },
     dieta: { 
