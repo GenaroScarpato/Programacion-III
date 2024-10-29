@@ -15,14 +15,16 @@ const add = async (usuarioId, recetaId, texto) => {
     return await nuevoComentario.save();
 };
 const getTodos = async () => {
-    return await Comentario.find();
-  
+  return await Comentario.find()
+    .populate('usuarioId', 'username -_id')  // Selecciona solo el 'username' y excluye el '_id'
+    .populate('recetaId', 'nombre -_id');    // Selecciona solo el 'titulo' y excluye el '_id'
 };
+
 
 const getById = async (id) => {
     return await Comentario.findById(id)
         .populate('usuarioId', 'username')
-        .populate('recetaId', 'titulo');
+        .populate('recetaId', 'nombre');
 };
 
 const getByReceta = async (recetaId) => {

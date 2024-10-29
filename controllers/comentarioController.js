@@ -5,8 +5,6 @@ const add = async (req, res) => {
         const { recetaId, texto } = req.body; // Obtiene la recetaId y el texto del cuerpo de la petición
         const usuarioId = req.usuario.id; // Asumiendo que tienes el ID del usuario en el token
         
-        console.log(usuarioId);
-
         const nuevoComentario = await comentariosModel.add(usuarioId, recetaId, texto); // Usando add
         res.status(201).json({
             message: 'Comentario agregado exitosamente',
@@ -46,8 +44,8 @@ const getById = async (req, res) => {
 
 
 const getByReceta = async (req, res) => {
-    const { recetaId } = req.params;
-
+    const { id : recetaId } = req.params;
+         
     try {
         const comentarios = await comentariosModel.getByReceta(recetaId); // Usando getByReceta
 
@@ -62,7 +60,7 @@ const getByReceta = async (req, res) => {
 }
 
 const getByUser = async (req, res) => {
-    const usuarioId = req.user.id; // Cambiado para usar el ID del usuario del token
+    const usuarioId = req.usuario.id; // Cambiado para usar el ID del usuario del token
 
     try {
         const comentarios = await comentariosModel.getByUser(usuarioId); // Usando getByUser
