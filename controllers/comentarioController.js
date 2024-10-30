@@ -74,20 +74,43 @@ const getByUser = async (req, res) => {
         res.status(500).json({ error: 'Hubo un error al obtener los comentarios del usuario' });
     }
 }
-
 const deleteById = async (req, res) => {
     const { id } = req.params;
+    const { usuario } = req; // Obtiene el usuario del token
+
     try {
-        const resultado = await comentariosModel.deleteById(id); // Cambiado a deleteById
-        if (resultado) {
-            res.status(200).json({ message: `Comentario con ID ${id} eliminado correctamente` });
-        } else {
-            res.status(404).json({ error: `Comentario con ID ${id} no encontrado` });
+        // Primero, busca el comentario por ID
+        const comentario = await comentariosModel.getById(id);
+
+        // Verifica si el comentario existe
+        if (!comentario) {
+            return res.status(404).json({ error: `Comentario con ID ${id} no encontrado` });
         }
+
+        // Agrega console.log para depuración
+        console.log("Comentario encontrado:", comentario);
+        console.log("Usuario desde el token:", usuario);
+
+        // Verifica si el usuario es el autor del comentario o un administrador
+        const comentarioUsuarioId = comentario.usuarioId._id.toString(); // Accede al _id del usuario en el comentario
+        console.log("ID de usuario del comentario:", comentarioUsuarioId);
+        console.log("ID de usuario desde el token:", usuario._id.toString());
+
+        if (comentarioUsuarioId !== usuario._id.toString() && usuario.role !== 'ADMIN') {
+            console.log("Acceso denegado: usuario no es el autor ni administrador");
+            return res.status(403).json({ error: 'No tienes permisos para eliminar este comentario' });
+        }
+
+        // Si pasa las verificaciones, elimina el comentario
+        await comentariosModel.deleteById(id);
+        res.status(200).json({ message: `Comentario con ID ${id} eliminado correctamente` });
+
     } catch (error) {
+        console.log("Error en la eliminación:", error);
         res.status(500).json({ error: 'Hubo un error al eliminar el comentario' });
     }
-}
+};
+
 
 module.exports = {
     add,

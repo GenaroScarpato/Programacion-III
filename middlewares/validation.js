@@ -40,8 +40,7 @@ const validarJwt = async (req, res, next) => {
 };
 
 
-const validarRol = async(req, resp, next) => {
-
+const validarAdmin = async(req, resp, next) => {
     const usuario = req.usuario;     
 
         if (usuario.role === "ADMIN") {
@@ -55,5 +54,5 @@ const validarRol = async(req, resp, next) => {
 
 module.exports = {
     validarJwt,
-    validarRol
+    validarAdmin
 }
