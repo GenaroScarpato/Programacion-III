@@ -69,12 +69,9 @@ const add = async (req, res) => {
 }
 
 const buscarRecetasPorIngredientes = async (req, res) => {
-    const { ingredientes } = req.body; // Recibimos los IDs de los ingredientes en el cuerpo de la solicitud
-    
+    const { ingredientes } = req.body; // IDs de ingredientes recibidos en el cuerpo de la solicitud
     try {
-        const recetas = await recetasModel.find({
-            ingredientes: { $all: ingredientes } // Usamos $all para buscar recetas que contengan todos los ingredientes especificados
-        }).populate('ingredientes'); // Populamos los ingredientes para ver los detalles
+        const recetas = await recetasModel.buscarPorIngredientes(ingredientes);
 
         if (recetas.length > 0) {
             res.json(recetas);

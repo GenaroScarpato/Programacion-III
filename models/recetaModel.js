@@ -58,7 +58,6 @@ const getById = async (id) => {
     return await Receta.findById(id).populate('ingredientes', 'nombre -_id');
 }
 
-
 const deleteById = async (id) => {
     return await Receta.findByIdAndDelete(id);
 }
@@ -81,11 +80,18 @@ const add = async (nuevaReceta) => {
     return await receta.save();
 };
 
+const buscarPorIngredientes = async (ingredientes) => {
+    return await Receta.find({
+        ingredientes: { $all: ingredientes }
+    }).populate('ingredientes'); // Popula los detalles de cada ingrediente
+};
+
 // Exportar las funciones
 module.exports = {
     getAll,
     getById,
     deleteById,
     updateById,
-    add
+    add,
+    buscarPorIngredientes
 }
