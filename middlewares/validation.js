@@ -7,7 +7,7 @@ const validarJwt = async (req, res, next) => {
 
     if (!token) {
         return res.status(401).json({
-            msg: 'No hay token en la petición'
+            msg: 'Necesita  logearse para realizar esta acción'
         });
     }
 

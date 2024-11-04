@@ -32,7 +32,7 @@ const getByReceta = async (recetaId) => {
 };
 
 const getByUser = async (usuarioId) => {
-    return await Comentario.find({ usuarioId }).populate('recetaId', 'titulo'); // Poblamos el título de la receta
+    return await Comentario.find({ usuarioId }).populate('recetaId', 'nombre'); // Poblamos el título de la receta
 };
 
 const deleteById = async (id) => {

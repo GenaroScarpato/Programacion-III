@@ -60,7 +60,7 @@ const getByReceta = async (req, res) => {
 }
 
 const getByUser = async (req, res) => {
-    const usuarioId = req.usuario.id; // Cambiado para usar el ID del usuario del token
+    const usuarioId = req.params.id; // Obtenemos el ID del usuario desde los parámetros de la solicitud
 
     try {
         const comentarios = await comentariosModel.getByUser(usuarioId); // Usando getByUser
@@ -74,6 +74,7 @@ const getByUser = async (req, res) => {
         res.status(500).json({ error: 'Hubo un error al obtener los comentarios del usuario' });
     }
 }
+
 const deleteById = async (req, res) => {
     const { id } = req.params;
     const { usuario } = req; // Obtiene el usuario del token
