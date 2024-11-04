@@ -74,6 +74,7 @@ const updateById = async (req, res) => {
             res.status(404).json({ error: `Usuario con ID ${id} no encontrado` });
         }
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Hubo un error al actualizar el usuario' });
     }
 }

@@ -15,6 +15,7 @@ const usuarioSchema = new mongoose.Schema({
 }, { versionKey: false });
 
 usuarioSchema.pre('save', hashPassword);
+usuarioSchema.pre('findOneAndUpdate',hashPassword);
 
 
 // Crear el modelo 'Usuario' para la colección 'usuarios'
