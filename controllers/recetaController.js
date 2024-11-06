@@ -5,21 +5,20 @@ const getAll = async (req, res) => {
         const recetas = await recetasModel.getAll();
         res.json(recetas);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: 'Hubo un error al obtener las recetas' });
     }
 }
 
 const getById = async (req, res) => {
     const { id } = req.params;
-   
+
     try {
         const receta = await recetasModel.getById(id);
 
         if (receta) {
             res.json(receta);
         } else {
-            res.status(404).json({ id, encontrado: false });
+            res.status(404).json({ error: 'Receta no encontrada' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Hubo un error al obtener la receta' });
@@ -83,6 +82,23 @@ const buscarRecetasPorIngredientes = async (req, res) => {
     }
 };
 
+const buscarPorTipoComida = async (req, res) => {
+    try {
+        console.log("hola");
+        const tiposComida = req.query.tiposComida;
+        console.log(tiposComida);
+        console.log(req.query)
+        const recetas = await recetasModel.buscarPorTipoComida(tiposComida);
+        if (recetas.length > 0) {
+            res.json(recetas);
+        } else {
+            res.status(404).json({ message: 'No se encontraron recetas con los ingredientes especificados' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Hubo un error al buscar las recetas' });
+    }
+      
+};
 
 module.exports = {
     getAll,
@@ -90,5 +106,7 @@ module.exports = {
     deleteById,
     updateById,
     add,
-    buscarRecetasPorIngredientes
+    buscarRecetasPorIngredientes,
+    buscarPorTipoComida
+
 }

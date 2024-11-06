@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { Ingrediente } = require('../models/ingredienteModel'); // Ajusta esta ruta según tu estructura de carpetas
+const { Ingrediente } = require('../models/ingredienteModel');
+
 // Esquema de receta
 const recetaSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
@@ -13,7 +14,13 @@ const recetaSchema = new mongoose.Schema({
         enum: ['Cocina Italiana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
         required: true 
     },
-    ingredientes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ingrediente', required: true }], // Referencia a ingredientes
+    ingredientes: [
+        {
+            ingrediente: {  type: mongoose.Schema.Types.ObjectId,  ref: 'Ingrediente', required: true },
+            cantidad: {   type: Number, required: true },
+            unidad: {  type: String, enum: ['unidades', 'gramos', 'ml', 'tazas', 
+                                             'cucharadas', 'kg','lt'], required: true }}
+    ],
     metodoCoccion: { 
         type: String, 
         enum: ['Al horno', 'A la parrilla', 'A la plancha', 'Frito', 'Hervido', 'Al vapor', 'Crudo'], 
@@ -44,34 +51,48 @@ const recetaSchema = new mongoose.Schema({
 
 const Receta = mongoose.model('Receta', recetaSchema);
 
-const verificarIngredientesExistentes = async (ingredientesIds) => {
-        const ingredientes = await Ingrediente.find({ _id: { $in: ingredientesIds } });
-    return ingredientes.length === ingredientesIds.length; // Retorna true si todos existen
+// Función para verificar la existencia de ingredientes
+const verificarIngredientesExistentes = async (ingredientes) => {
+    const ids = ingredientes.map(item => item.ingrediente);
+    const ingredientesExistentes = await Ingrediente.find({ _id: { $in: ids } });
+    return ingredientesExistentes.length === ids.length;
 };
 
 // CRUD
 const getAll = async () => {
-    return await Receta.find().populate('ingredientes', 'nombre -_id');
-}
+    return await Receta.find().populate({
+        path: 'ingredientes.ingrediente',
+        select: 'nombre '
+    })
+};
+
+
 
 const getById = async (id) => {
-    return await Receta.findById(id).populate('ingredientes', 'nombre -_id');
-}
+    return await Receta.findById(id)
+        .populate({
+            path: 'ingredientes.ingrediente',
+            select: 'nombre '
+        });
+};
 
 const deleteById = async (id) => {
     return await Receta.findByIdAndDelete(id);
-}
+};
+
 const updateById = async (id, recetaActualizada) => {
-    // Verificar si todos los ingredientes existen
     const existen = await verificarIngredientesExistentes(recetaActualizada.ingredientes);
     if (!existen) {
         throw new Error('Uno o más ingredientes no existen en la base de datos');
     }
+    return await Receta.findByIdAndUpdate(id, recetaActualizada, { new: true })
+        .populate({
+            path: 'ingredientes.ingrediente',
+            select: 'nombre -_id'
+        });
+};
 
-    return await Receta.findByIdAndUpdate(id, recetaActualizada, { new: true });
-}
 const add = async (nuevaReceta) => {
-    // Verificar si todos los ingredientes existen
     const existen = await verificarIngredientesExistentes(nuevaReceta.ingredientes);
     if (!existen) {
         throw new Error('Uno o más ingredientes no existen en la base de datos');
@@ -80,11 +101,25 @@ const add = async (nuevaReceta) => {
     return await receta.save();
 };
 
-const buscarPorIngredientes = async (ingredientes) => {
+const buscarPorIngredientes = async (ingredientesId) => {
     return await Receta.find({
-        ingredientes: { $all: ingredientes }
-    }).populate('ingredientes'); // Popula los detalles de cada ingrediente
+        'ingredientes.ingrediente': { $all: ingredientesId }  // Buscamos si los ingredientes están en el array
+    })
+    .populate({
+        path: 'ingredientes.ingrediente',  // Especificamos que se debe poblar la referencia al ingrediente
+        select: 'nombre'  // Solo seleccionamos el nombre del ingrediente
+ });
 };
+
+const buscarPorTipoComida = async (tiposComida) => {
+    return await Receta.find({
+        tipoComida: { $in: tiposComida }
+    }).populate({
+        path: 'ingredientes.ingrediente',
+        select: 'nombre'
+    });
+};
+
 
 // Exportar las funciones
 module.exports = {
@@ -93,5 +128,6 @@ module.exports = {
     deleteById,
     updateById,
     add,
-    buscarPorIngredientes
-}
+    buscarPorIngredientes,
+    buscarPorTipoComida
+};
