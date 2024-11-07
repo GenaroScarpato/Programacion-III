@@ -11,7 +11,7 @@ const recetaSchema = new mongoose.Schema({
     },
     tipoCocina: { 
         type: String, 
-        enum: ['Cocina Italiana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa'], 
+        enum: ['Cocina Italiana', 'Cocina Mexicana', 'Cocina China', 'Cocina Japonesa', 'Cocina India', 'Cocina Mediterránea', 'Cocina Francesa','Cocina Española'], 
         required: true 
     },
     ingredientes: [
@@ -43,7 +43,7 @@ const recetaSchema = new mongoose.Schema({
     },
     temporada: { 
         type: String, 
-        enum: ['Verano', 'Invierno', 'Primavera', 'Otoño'], 
+        enum: ['Verano', 'Invierno', 'Primavera', 'Otoño', 'Todo el año'], 
         required: false 
     },
     foto: { type: String, required: true }
@@ -96,7 +96,7 @@ const add = async (nuevaReceta) => {
     // Verifica si ya existe una receta con el mismo nombre
     const recetaExistente = await Receta.findOne({ nombre: nuevaReceta.nombre });
     if (recetaExistente) {
-        throw new Error(`La receta "${nuevaReceta.nombre}" ya existe`);
+        throw new Error(`La receta ${nuevaReceta.nombre} ya existe`);
     }
 
     const existen = await verificarIngredientesExistentes(nuevaReceta.ingredientes);
