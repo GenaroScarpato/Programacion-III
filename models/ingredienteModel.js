@@ -28,6 +28,11 @@ const add = async (nuevoIngrediente) => {
     return await ingrediente.save(); 
 };
 
+const getByName = async (nombre) => {
+    return await Ingrediente.findOne({ nombre });
+};
+
+
 
 module.exports = {
     Ingrediente,
@@ -35,5 +40,6 @@ module.exports = {
     getById,
     deleteById,
     updateById,
-    add
+    add,
+    getByName
 }

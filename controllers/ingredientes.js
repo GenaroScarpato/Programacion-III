@@ -55,11 +55,23 @@ const updateById = async (req, res) => {
 
 const add = async (req, res) => {
     try {
-        const nuevoIngrediente = req.body; // Obtiene el ingrediente del cuerpo de la petición (req.body)
-        const ingredientesActualizados = await ingredientesModel.add(nuevoIngrediente); // Llama a la función `add` de tu modelo
+        const { nombre } = req.body; // Obtiene el nombre del ingrediente del cuerpo de la petición
+
+        // Verificar si el ingrediente ya existe en la base de datos
+        const ingredienteExistente = await ingredientesModel.getByName(nombre); // Llama a la función para buscar por nombre
+        if (ingredienteExistente) {
+            return res.status(400).json({
+                message: 'El ingrediente ya existe'
+            });
+        }
+
+        // Si no existe, agregar el nuevo ingrediente
+        const nuevoIngrediente = req.body;
+        const ingredienteAgregado = await ingredientesModel.add(nuevoIngrediente);
+
         res.status(201).json({
             message: 'Ingrediente agregado exitosamente',
-            ingredientes: ingredientesActualizados // Retorna el array actualizado
+            ingrediente: ingredienteAgregado // Retorna el ingrediente agregado
         });
     } catch (error) {
         res.status(500).json({
@@ -67,7 +79,7 @@ const add = async (req, res) => {
             error: error.message
         });
     }
-}
+};
 
 // METODO ADD PARA AGREGAR MULTIPLES INGREDIENTES EN UNA SOLA PETICIÓN
 const addMany = async (req, res) => {
