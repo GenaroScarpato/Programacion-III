@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const { Ingrediente } = require('../models/ingredienteModel');
+const { consultarPrecio } = require('../services/preciosService');
+
 
 // Esquema de receta
 const recetaSchema = new mongoose.Schema({
@@ -128,6 +130,47 @@ const buscarPorTipoComida = async (tiposComida) => {
     });
 };
 
+async function calcularCostoReceta(idReceta) {
+    try {
+        const receta = await getById(idReceta);
+  
+        if (!receta) {
+            throw new Error(`La receta con ID ${idReceta} no fue encontrada.`);
+        }
+  
+        // Calcular el costo para cada ingrediente utilizando map
+        const costosIngredientes = await Promise.all(
+            receta.ingredientes.map(async (ingrediente) => {
+                const precioIngrediente = await consultarPrecio(ingrediente.ingrediente.nombre);
+                console.log(ingrediente.ingrediente.nombre + ": " + precioIngrediente);
+                
+                if (precioIngrediente) {
+                    let cantidadAjustada = ingrediente.cantidad;
+
+                    // Ajustar según la unidad de medida
+                    if (ingrediente.unidad === 'gramos') {
+                        cantidadAjustada = ingrediente.cantidad / 1000; // gramos a kg
+                    } else if (ingrediente.unidad === 'ml') {
+                        cantidadAjustada = ingrediente.cantidad / 1000; // ml a litros
+                    } 
+                    
+                    // Multiplicar cantidad ajustada por el precio
+                    return cantidadAjustada * precioIngrediente;
+                } else {
+                    console.error(`No se pudo encontrar el precio del ingrediente: ${ingrediente.ingrediente.nombre}`);
+                    return 0;
+                }
+            })
+        );
+  
+        // Calcular el costo total sumando los costos de los ingredientes
+        const costoTotal = costosIngredientes.reduce((total, costo) => total + costo, 0);
+        return costoTotal;
+    } catch (error) {
+        console.error('Error al calcular el costo de la receta:', error.message);
+        throw error;
+    }
+}
 
 
 // Exportar las funciones
@@ -138,5 +181,6 @@ module.exports = {
     updateById,
     add,
     buscarPorIngredientes,
-    buscarPorTipoComida
+    buscarPorTipoComida,
+    calcularCostoReceta
 };

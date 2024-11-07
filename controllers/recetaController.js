@@ -1,3 +1,4 @@
+const { model } = require("mongoose");
 const recetasModel = require("../models/recetaModel");
 
 const getAll = async (req, res) => {    
@@ -112,6 +113,19 @@ const buscarPorTipoComida = async (req, res) => {
     }
 };
 
+const calcularCostoReceta = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const costoTotal = await recetasModel.calcularCostoReceta(id);
+      res.json({ costoTotal });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al calcular el costo de la receta', message: error.message });
+    }
+  };
+  
+
+
+
 
 
 
@@ -122,6 +136,7 @@ module.exports = {
     updateById,
     add,
     buscarRecetasPorIngredientes,
-    buscarPorTipoComida
+    buscarPorTipoComida,
+    calcularCostoReceta
 
 }
