@@ -85,22 +85,22 @@ const buscarRecetasPorIngredientes = async (req, res) => {
 
 const buscarPorTipoComida = async (req, res) => {
     try {
-        let tiposComida = req.query.tiposComida;
+        let tipoComida = req.body.tipoComida;
 
-        // Verifica si tiposComida está definido
-        if (!tiposComida) {
-            return res.status(400).json({ error: 'El parámetro tiposComida es requerido' });
+        // Verifica si tipoComida está definido
+        if (!tipoComida) {
+            return res.status(400).json({ error: 'El parámetro tipoComida es requerido' });
         }
 
-        // Si tiposComida es un string, conviértelo a array (maneja un solo valor o varios separados por comas)
-        if (typeof tiposComida === 'string') {
-            tiposComida = tiposComida.includes(',')
-                ? tiposComida.split(',') // Si tiene coma, lo convierte en array
-                : [tiposComida]; // Si no, lo convierte en un array con un solo valor
+        // Si tipoComida es un string, conviértelo a array (maneja un solo valor o varios separados por comas)
+        if (typeof tipoComida === 'string') {
+            tipoComida = tipoComida.includes(',')
+                ? tipoComida.split(',') // Si tiene coma, lo convierte en array
+                : [tipoComida]; // Si no, lo convierte en un array con un solo valor
         }
 
-        // Llama al modelo con el array de tiposComida
-        const recetas = await recetasModel.buscarPorTipoComida(tiposComida);
+        // Llama al modelo con el array de tipoComida
+        const recetas = await recetasModel.buscarPorTipoComida(tipoComida);
 
         if (recetas.length > 0) {
             res.json(recetas);
