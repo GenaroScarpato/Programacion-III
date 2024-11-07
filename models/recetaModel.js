@@ -113,12 +113,13 @@ const buscarPorIngredientes = async (ingredientesId) => {
 
 const buscarPorTipoComida = async (tiposComida) => {
     return await Receta.find({
-        tipoComida: { $in: tiposComida }
+        tipoComida: { $in: tiposComida }  // Busca recetas que coincidan con cualquier tipo de comida en el array
     }).populate({
         path: 'ingredientes.ingrediente',
         select: 'nombre'
     });
 };
+
 
 
 // Exportar las funciones

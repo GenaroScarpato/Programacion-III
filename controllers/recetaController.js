@@ -84,21 +84,38 @@ const buscarRecetasPorIngredientes = async (req, res) => {
 
 const buscarPorTipoComida = async (req, res) => {
     try {
-        console.log("hola");
-        const tiposComida = req.query.tiposComida;
-        console.log(tiposComida);
-        console.log(req.query)
+        let tiposComida = req.query.tiposComida;
+
+        // Verifica si tiposComida está definido
+        if (!tiposComida) {
+            return res.status(400).json({ error: 'El parámetro tiposComida es requerido' });
+        }
+
+        // Si tiposComida es un string, conviértelo a array (maneja un solo valor o varios separados por comas)
+        if (typeof tiposComida === 'string') {
+            tiposComida = tiposComida.includes(',')
+                ? tiposComida.split(',') // Si tiene coma, lo convierte en array
+                : [tiposComida]; // Si no, lo convierte en un array con un solo valor
+        }
+
+        console.log('Tipos de comida recibidos:', tiposComida); // Debug
+
+        // Llama al modelo con el array de tiposComida
         const recetas = await recetasModel.buscarPorTipoComida(tiposComida);
+
         if (recetas.length > 0) {
             res.json(recetas);
         } else {
-            res.status(404).json({ message: 'No se encontraron recetas con los ingredientes especificados' });
+            res.status(404).json({ message: 'No se encontraron recetas para los tipos de comida especificados' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Hubo un error al buscar las recetas' });
+        console.error('Error al buscar recetas por tipo de comida:', error);
+        res.status(500).json({ error: 'Hubo un error al buscar las recetas', detalle: error.message });
     }
-      
 };
+
+
+
 
 module.exports = {
     getAll,

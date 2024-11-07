@@ -10,7 +10,7 @@ router.delete('/:id',[validarJwt,validarAdmin], deleteById);
 router.put('/:id',[validarJwt,validarAdmin], updateById);
 router.post('/',[validarJwt,validarAdmin], add);
 router.post('/buscarPorIngredientes', buscarRecetasPorIngredientes);
-router.get('/buscarPorTipoComida', buscarPorTipoComida);
+router.post('/buscarPorTipoComida', buscarPorTipoComida);
 
 
 module.exports = router;
