@@ -93,13 +93,21 @@ const updateById = async (id, recetaActualizada) => {
 };
 
 const add = async (nuevaReceta) => {
+    // Verifica si ya existe una receta con el mismo nombre
+    const recetaExistente = await Receta.findOne({ nombre: nuevaReceta.nombre });
+    if (recetaExistente) {
+        throw new Error(`La receta "${nuevaReceta.nombre}" ya existe`);
+    }
+
     const existen = await verificarIngredientesExistentes(nuevaReceta.ingredientes);
     if (!existen) {
         throw new Error('Uno o más ingredientes no existen en la base de datos');
     }
+
     const receta = new Receta(nuevaReceta);
     return await receta.save();
 };
+
 
 const buscarPorIngredientes = async (ingredientesId) => {
     return await Receta.find({

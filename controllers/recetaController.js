@@ -53,11 +53,11 @@ const updateById = async (req, res) => {
 
 const add = async (req, res) => {
     try {
-        const nuevaReceta = req.body; // Obtiene la receta del cuerpo de la petición (req.body)
-        const recetaAgregada = await recetasModel.add(nuevaReceta); // Llama a la función `add` de tu modelo
+        const nuevaReceta = req.body;
+        const recetaAgregada = await recetasModel.add(nuevaReceta);
         res.status(201).json({
             message: 'Receta agregada exitosamente',
-            receta: recetaAgregada // Retorna la receta agregada
+            receta: recetaAgregada
         });
     } catch (error) {
         res.status(500).json({
@@ -65,7 +65,8 @@ const add = async (req, res) => {
             error: error.message
         });
     }
-}
+};
+
 
 const buscarRecetasPorIngredientes = async (req, res) => {
     const { ingredientes } = req.body; // IDs de ingredientes recibidos en el cuerpo de la solicitud
@@ -98,8 +99,6 @@ const buscarPorTipoComida = async (req, res) => {
                 : [tiposComida]; // Si no, lo convierte en un array con un solo valor
         }
 
-        console.log('Tipos de comida recibidos:', tiposComida); // Debug
-
         // Llama al modelo con el array de tiposComida
         const recetas = await recetasModel.buscarPorTipoComida(tiposComida);
 
@@ -109,7 +108,6 @@ const buscarPorTipoComida = async (req, res) => {
             res.status(404).json({ message: 'No se encontraron recetas para los tipos de comida especificados' });
         }
     } catch (error) {
-        console.error('Error al buscar recetas por tipo de comida:', error);
         res.status(500).json({ error: 'Hubo un error al buscar las recetas', detalle: error.message });
     }
 };
