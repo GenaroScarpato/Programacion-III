@@ -133,16 +133,15 @@ const buscarPorTipoComida = async (tiposComida) => {
 async function calcularCostoReceta(idReceta) {
     try {
         const receta = await getById(idReceta);
-  
+
         if (!receta) {
             throw new Error(`La receta con ID ${idReceta} no fue encontrada.`);
         }
-  
-        // Calcular el costo para cada ingrediente utilizando map
-        const costosIngredientes = await Promise.all(
+
+        // Calcular el costo para cada ingrediente y obtener el detalle
+        const detallesIngredientes = await Promise.all(
             receta.ingredientes.map(async (ingrediente) => {
                 const precioIngrediente = await consultarPrecio(ingrediente.ingrediente.nombre);
-                console.log(ingrediente.ingrediente.nombre + ": " + precioIngrediente);
                 
                 if (precioIngrediente) {
                     let cantidadAjustada = ingrediente.cantidad;
@@ -152,25 +151,40 @@ async function calcularCostoReceta(idReceta) {
                         cantidadAjustada = ingrediente.cantidad / 1000; // gramos a kg
                     } else if (ingrediente.unidad === 'ml') {
                         cantidadAjustada = ingrediente.cantidad / 1000; // ml a litros
-                    } 
-                    
-                    // Multiplicar cantidad ajustada por el precio
-                    return cantidadAjustada * precioIngrediente;
+                    }
+
+                    // Calcular el costo del ingrediente
+                    const costoIngrediente = cantidadAjustada * precioIngrediente;
+
+                    return {
+                        nombre: ingrediente.ingrediente.nombre,
+                        cantidad: ingrediente.cantidad,
+                        unidad: ingrediente.unidad,
+                        costo: costoIngrediente
+                    };
                 } else {
                     console.error(`No se pudo encontrar el precio del ingrediente: ${ingrediente.ingrediente.nombre}`);
-                    return 0;
+                    return {
+                        nombre: ingrediente.ingrediente.nombre,
+                        cantidad: ingrediente.cantidad,
+                        unidad: ingrediente.unidad,
+                        costo: 0
+                    };
                 }
             })
         );
-  
+
         // Calcular el costo total sumando los costos de los ingredientes
-        const costoTotal = costosIngredientes.reduce((total, costo) => total + costo, 0);
-        return costoTotal;
+        const costoTotal = detallesIngredientes.reduce((total, detalle) => total + detalle.costo, 0);
+
+        // Devolver el detalle y el costo total
+        return { detallesIngredientes, costoTotal };
     } catch (error) {
         console.error('Error al calcular el costo de la receta:', error.message);
         throw error;
     }
 }
+
 
 
 // Exportar las funciones

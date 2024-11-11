@@ -115,14 +115,14 @@ const buscarPorTipoComida = async (req, res) => {
 
 const calcularCostoReceta = async (req, res) => {
     try {
-      const { id } = req.params;
-      const costoTotal = await recetasModel.calcularCostoReceta(id);
-      res.json({ costoTotal });
+        const { id } = req.params;
+        const { detallesIngredientes, costoTotal } = await recetasModel.calcularCostoReceta(id);
+        res.json({ detallesIngredientes, costoTotal });
     } catch (error) {
-      res.status(500).json({ error: 'Error al calcular el costo de la receta', message: error.message });
+        res.status(500).json({ error: 'Error al calcular el costo de la receta', message: error.message });
     }
-  };
-  
+};
+
 
 
 
