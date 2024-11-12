@@ -29,12 +29,28 @@ const getById = async (req, res) => {
 const deleteById = async (req, res) => {
     const { id } = req.params;
     try {
-        await ingredientesModel.deleteById(id);
-        res.status(200).json({ message: `Ingrediente con ID ${id} eliminado correctamente` });
+        // Eliminar el ingrediente y sus recetas asociadas
+        const result = await ingredientesModel.deleteById(id);
+
+        // Verificar si el ingrediente y las recetas asociadas fueron eliminados
+        if (result.ingredienteEliminado) {
+            res.status(200).json({
+                message: `Ingrediente con ID ${id} y ${result.recetasEliminadas} recetas asociadas eliminadas correctamente.`
+            });
+        } else {
+            // Si no se encuentra el ingrediente
+            res.status(404).json({
+                error: `Ingrediente con ID ${id} no encontrado en la base de datos.`
+            });
+        }
     } catch (error) {
-        res.status(404).json({ error: `Ingrediente con ID ${id} no encontrado` });
+        console.error('Error en el controlador de eliminación:', error.message);
+        res.status(500).json({
+            error: `Hubo un problema al intentar eliminar el ingrediente y sus recetas asociadas. Detalles: ${error.message}`
+        });
     }
 };
+
 
 const updateById = async (req, res) => {
     const { id } = req.params;

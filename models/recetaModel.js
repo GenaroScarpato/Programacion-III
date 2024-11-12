@@ -189,6 +189,7 @@ async function calcularCostoReceta(idReceta) {
 
 // Exportar las funciones
 module.exports = {
+    Receta,
     getAll,
     getById,
     deleteById,
@@ -196,5 +197,6 @@ module.exports = {
     add,
     buscarPorIngredientes,
     buscarPorTipoComida,
-    calcularCostoReceta
+    calcularCostoReceta,
+    
 };
