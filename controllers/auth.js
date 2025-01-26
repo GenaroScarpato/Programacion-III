@@ -44,7 +44,7 @@ const generarJWT = (userId) => {
         const payload = { id: userId };  // Usar solo el ID del usuario
 
         jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
-            expiresIn: '2h'  // Token expira en 1 hora
+            expiresIn: '2h'  // Token expira en 2 horas
         }, (err, token) => {
             if (err) {
                 console.log(err);

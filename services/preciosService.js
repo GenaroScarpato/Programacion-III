@@ -5,7 +5,7 @@ const consultarPrecio = async (nombreProducto) => {
     const response = await axios.get('https://api.mercadolibre.com/sites/MLA/search', {
       params: {
         q: nombreProducto,
-        limit: 1, // Limit to 1 result to get the first match
+        limit: 1,
       },
     });
 

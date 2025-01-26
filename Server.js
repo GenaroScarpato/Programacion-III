@@ -4,6 +4,9 @@ const ingredientesRoutes = require('./routes/ingredientes');
 const usuariosRoutes = require('./routes/usuarios'); 
 const recetasRoutes = require('./routes/recetas');
 const comentariosRoutes = require('./routes/comentarios');
+const cors = require('cors'); // Asegúrate de instalarlo: npm install cors
+
+
 
 
 class Server {
@@ -22,9 +25,15 @@ class Server {
         });
     }
 
-    cargarMiddlewares() {
-        this.app.use(express.json());
-    }
+cargarMiddlewares() {
+    this.app.use(cors({
+        origin: 'http://localhost:5173', // Cambia este valor por la URL de tu frontend
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+        allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
+    }));
+    this.app.use(express.json());
+}
+
 
     cargarRutas() {
         this.app.use("/api/ingredientes", require('./routes/ingredientes'));
@@ -45,4 +54,4 @@ class Server {
     }
 }
 
-module.exports = Server;
+module.exports = Server;    
